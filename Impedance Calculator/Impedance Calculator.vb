@@ -13,6 +13,7 @@ Imports System
 Imports System.Math
 
 Module ImpedanceCalcultor
+
     Sub Main()
 
         Dim userInput As String
@@ -32,17 +33,19 @@ Module ImpedanceCalcultor
             ElseIf userInput.ToLower() = "p" Then
 
                 totalImpedance = Parallel()
-                'Console.Clear()
+                Console.Clear()
                 Console.WriteLine($"Real: {totalImpedance(0)} | Imaginary: {totalImpedance(1)}")
                 Console.WriteLine(vbCrLf & $"Polar: {totalImpedance(2)} | Angle: {totalImpedance(3)}°" & vbCrLf)
+
+            Else
+
+                Console.WriteLine("That value doesn't work...." & vbCrLf)
 
             End If
 
         Loop
 
     End Sub
-
-
 
     Function Series() As Double()
 
@@ -68,11 +71,25 @@ Module ImpedanceCalcultor
             For j = 0 To 1
                 Select Case j
                     Case 0
-                        Console.WriteLine(vbCrLf & $"What is the real of impedance #{i + 1}")
-                        impedances(i, j) = CDbl(Console.ReadLine())
+                        Do
+                            Try
+                                Console.WriteLine(vbCrLf & $"What is the real of impedance #{i + 1}")
+                                impedances(i, j) = CDbl(Console.ReadLine())
+                                Exit Do
+                            Catch ex As Exception
+                                Console.WriteLine("That values doesn't work")
+                            End Try
+                        Loop
                     Case 1
-                        Console.WriteLine($"What is the imaginary of impedance #{i + 1}")
-                        impedances(i, j) = CDbl(Console.ReadLine())
+                        Do
+                            Try
+                                Console.WriteLine(vbCrLf & $"What is the imaginary of impedance #{i + 1}")
+                                impedances(i, j) = CDbl(Console.ReadLine())
+                                Exit Do
+                            Catch ex As Exception
+                                Console.WriteLine("That values doesn't work")
+                            End Try
+                        Loop
                 End Select
             Next
         Next
@@ -122,11 +139,25 @@ Module ImpedanceCalcultor
             For j = 0 To 1
                 Select Case j
                     Case 0
-                        Console.WriteLine(vbCrLf & $"What is the real of impedance #{i + 1}")
-                        impedances(i, j) = CDbl(Console.ReadLine())
+                        Do
+                            Try
+                                Console.WriteLine(vbCrLf & $"What is the real of impedance #{i + 1}")
+                                impedances(i, j) = CDbl(Console.ReadLine())
+                                Exit Do
+                            Catch ex As Exception
+                                Console.WriteLine("That values doesn't work")
+                            End Try
+                        Loop
                     Case 1
-                        Console.WriteLine($"What is the imaginary of impedance #{i + 1}")
-                        impedances(i, j) = CDbl(Console.ReadLine())
+                        Do
+                            Try
+                                Console.WriteLine(vbCrLf & $"What is the imaginary of impedance #{i + 1}")
+                                impedances(i, j) = CDbl(Console.ReadLine())
+                                Exit Do
+                            Catch ex As Exception
+                                Console.WriteLine("That values doesn't work")
+                            End Try
+                        Loop
                 End Select
             Next
         Next
@@ -135,20 +166,16 @@ Module ImpedanceCalcultor
         totalParallelImpedance(2) = 1 * 10 ^ 9
         totalParallelImpedance(3) = 0
 
-        'Major Problem, VB is in radians, not degrees...
-
         'Adds the parallel impedances into an array to return back to the main code to be displayed
         For i = 0 To impedances.GetLength(0) - 1
             'Stores the inverse of so far total polar impedance to be parallel'd
             tempStorageOfImpedances(0) = 1 / totalParallelImpedance(2)
             tempStorageOfImpedances(1) = -totalParallelImpedance(3)
-            Console.WriteLine(tempStorageOfImpedances(0))
-            Console.WriteLine(tempStorageOfImpedances(1))
+
             'Stores the inverse of the next impedance ready to be parallel'd 
             tempStorageOfImpedances(2) = 1 / ((impedances(i, 0) ^ 2 + impedances(i, 1) ^ 2) ^ 0.5)
             tempStorageOfImpedances(3) = -(Atan(impedances(i, 1) / impedances(i, 0)))
-            Console.WriteLine(tempStorageOfImpedances(2))
-            Console.WriteLine(tempStorageOfImpedances(3))
+
             'Combines the two ready to be parallel'd values into polar
             totalParallelImpedance(2) = 1 / ((((tempStorageOfImpedances(0) * Cos(tempStorageOfImpedances(1))) +
                 (tempStorageOfImpedances(2) * Cos(tempStorageOfImpedances(3)))) ^ 2 +
@@ -159,8 +186,7 @@ Module ImpedanceCalcultor
                 (tempStorageOfImpedances(2) * Sin(tempStorageOfImpedances(3)))) /
                 ((tempStorageOfImpedances(0) * Cos(tempStorageOfImpedances(1))) +
                 (tempStorageOfImpedances(2) * Cos(tempStorageOfImpedances(3)))))
-            Console.WriteLine(totalParallelImpedance(2))
-            Console.WriteLine(totalParallelImpedance(3))
+
         Next
 
         'Converts the two polar impedances values into rectangular and stores them to be sent out
