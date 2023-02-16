@@ -74,7 +74,7 @@ Module ImpedanceCalcultor
                         Do
                             Try
                                 Console.WriteLine(vbCrLf & $"What is the real of impedance #{i + 1}")
-                                impedances(i, j) = CDbl(Console.ReadLine())
+                                impedances(i, j) = Abs(CDbl(Console.ReadLine()))
                                 Exit Do
                             Catch ex As Exception
                                 Console.WriteLine("That values doesn't work")
@@ -142,7 +142,7 @@ Module ImpedanceCalcultor
                         Do
                             Try
                                 Console.WriteLine(vbCrLf & $"What is the real of impedance #{i + 1}")
-                                impedances(i, j) = CDbl(Console.ReadLine())
+                                impedances(i, j) = Abs(CDbl(Console.ReadLine()))
                                 Exit Do
                             Catch ex As Exception
                                 Console.WriteLine("That values doesn't work")
@@ -199,6 +199,3 @@ Module ImpedanceCalcultor
     End Function
 
 End Module
-
-
-
