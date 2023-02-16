@@ -18,7 +18,6 @@ Module ImpedanceCalcultor
         Dim userInput As String
         Dim totalImpedance() As Double
 
-
         Do
             Console.WriteLine("Parallel or Series? S/P")
             userInput = Console.ReadLine()
@@ -33,7 +32,7 @@ Module ImpedanceCalcultor
             ElseIf userInput.ToLower() = "p" Then
 
                 totalImpedance = Parallel()
-                Console.Clear()
+                'Console.Clear()
                 Console.WriteLine($"Real: {totalImpedance(0)} | Imaginary: {totalImpedance(1)}")
                 Console.WriteLine(vbCrLf & $"Polar: {totalImpedance(2)} | Angle: {totalImpedance(3)}°" & vbCrLf)
 
@@ -78,7 +77,7 @@ Module ImpedanceCalcultor
             Next
         Next
 
-        'Adds the impedances into an array to return back to the main code to be displayed
+        'Adds the series impedances into an array to return back to the main code to be displayed
         For i = 0 To impedances.GetLength(0) - 1
             For j = 0 To 1
                 Select Case j
@@ -101,10 +100,73 @@ Module ImpedanceCalcultor
     Function Parallel() As Double()
 
         Dim totalParallelImpedance(4) As Double
+        Dim tempStorageOfImpedances(4) As Double
         Dim impedances(0, 0) As Double
         Dim userInput As String
 
+        'ReDims an array containing however many impedances the user chooses
+        Do
+            Console.WriteLine(vbCrLf & "How many impedances?: ")
+            userInput = Console.ReadLine
+            Try
+                ReDim impedances(Math.Abs(CInt(userInput)) - 1, 1)
+                Console.WriteLine(vbCrLf & $"You chose {Math.Abs(CInt(userInput))} impedances.")
+                Exit Do
+            Catch ex As Exception
+                Console.WriteLine("That is not a whole number")
+            End Try
+        Loop
 
+        'Populates the array's values based off of user's inputs
+        For i = 0 To impedances.GetLength(0) - 1
+            For j = 0 To 1
+                Select Case j
+                    Case 0
+                        Console.WriteLine(vbCrLf & $"What is the real of impedance #{i + 1}")
+                        impedances(i, j) = CDbl(Console.ReadLine())
+                    Case 1
+                        Console.WriteLine($"What is the imaginary of impedance #{i + 1}")
+                        impedances(i, j) = CDbl(Console.ReadLine())
+                End Select
+            Next
+        Next
+
+        'Populates he first portion of the array to be an open ensure that the first stored value isnt a short
+        totalParallelImpedance(2) = 1 * 10 ^ 9
+        totalParallelImpedance(3) = 0
+
+        'Major Problem, VB is in radians, not degrees...
+
+        'Adds the parallel impedances into an array to return back to the main code to be displayed
+        For i = 0 To impedances.GetLength(0) - 1
+            'Stores the inverse of so far total polar impedance to be parallel'd
+            tempStorageOfImpedances(0) = 1 / totalParallelImpedance(2)
+            tempStorageOfImpedances(1) = -totalParallelImpedance(3)
+            Console.WriteLine(tempStorageOfImpedances(0))
+            Console.WriteLine(tempStorageOfImpedances(1))
+            'Stores the inverse of the next impedance ready to be parallel'd 
+            tempStorageOfImpedances(2) = 1 / ((impedances(i, 0) ^ 2 + impedances(i, 1) ^ 2) ^ 0.5)
+            tempStorageOfImpedances(3) = -(Atan(impedances(i, 1) / impedances(i, 0)))
+            Console.WriteLine(tempStorageOfImpedances(2))
+            Console.WriteLine(tempStorageOfImpedances(3))
+            'Combines the two ready to be parallel'd values into polar
+            totalParallelImpedance(2) = 1 / ((((tempStorageOfImpedances(0) * Cos(tempStorageOfImpedances(1))) +
+                (tempStorageOfImpedances(2) * Cos(tempStorageOfImpedances(3)))) ^ 2 +
+                ((tempStorageOfImpedances(0) * Sin(tempStorageOfImpedances(1))) +
+                (tempStorageOfImpedances(2) * Sin(tempStorageOfImpedances(3)))) ^ 2) ^ 0.5)
+            'This is for the phase angle of the two combined values
+            totalParallelImpedance(3) = -Atan(((tempStorageOfImpedances(0) * Sin(tempStorageOfImpedances(1))) +
+                (tempStorageOfImpedances(2) * Sin(tempStorageOfImpedances(3)))) /
+                ((tempStorageOfImpedances(0) * Cos(tempStorageOfImpedances(1))) +
+                (tempStorageOfImpedances(2) * Cos(tempStorageOfImpedances(3)))))
+            Console.WriteLine(totalParallelImpedance(2))
+            Console.WriteLine(totalParallelImpedance(3))
+        Next
+
+        'Converts the two polar impedances values into rectangular and stores them to be sent out
+        totalParallelImpedance(0) = totalParallelImpedance(2) * Cos(totalParallelImpedance(3))
+        totalParallelImpedance(1) = totalParallelImpedance(2) * Sin(totalParallelImpedance(3))
+        totalParallelImpedance(3) = totalParallelImpedance(3) * 360 / (2 * Math.PI)
 
         Return totalParallelImpedance
 
